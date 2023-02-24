@@ -1,0 +1,5 @@
+streamlit
+cohere
+pytube
+youtube_transcript_api
+replicate
