@@ -5,6 +5,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import validators
 import replicate
 
+#set the  REPLICATE_API_TOKEN as en env variable
 model = replicate.models.get("stability-ai/stable-diffusion")
 version = model.versions.get("db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf")
 

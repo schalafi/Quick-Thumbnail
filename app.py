@@ -8,7 +8,7 @@ from utils import get_video_info
 from utils import get_image
 
 co = cohere.Client(os.getenv('COHERE_API_KEY')) 
-
+#https://youtu.be/Q0A35ZfgwHA
 #TODO (VIDEO Info->Thumbnail prompt): use embeeding
 #to extract the most relevant text from the captions
 #compare video title with chunks of the captions 
@@ -60,19 +60,22 @@ def generate_prompt(url:str):
     if len(url) == 0:
         return None
     video_title, tags, transcript = get_info(url)
-    new_request = f"""
-    Video Title: {video_title}
-    Tags: {tags}
-    Transcript: {transcript}
-    Prompt: """
+    video_title+="."
+    tags+="."
+    transcript+="."
+    new_request="\n"
+    new_request +=f"Video Title: {video_title}\n"
+    new_request += f"Tags: {tags}\n\n"
+    new_request += f"Transcript: {transcript}\n\n"
+    new_request += f"Prompt: "
+
     prompt = BASE_PROMPT + new_request
     print("New Prompt: ", prompt)
 
-    
     response = co.generate( 
     model='xlarge', 
     prompt=prompt, 
-    max_tokens=20, 
+    max_tokens=30, 
     temperature=0.1, 
     k=0, 
     p=1, 
@@ -80,11 +83,12 @@ def generate_prompt(url:str):
     presence_penalty=0.5, 
     stop_sequences=["--"], 
     return_likelihoods='NONE') 
-    
-    prompt = response.generations[0].text
-    
+
+    thumbnail_prompt = response.generations[0].text
+    print("GENERATED PROMPT: ", thumbnail_prompt)
+
     #st.balloons()
-    return prompt
+    return thumbnail_prompt 
 
 def generate_image(url:str):
     prompt = generate_prompt(url)[:-2]
@@ -106,6 +110,7 @@ input = st.text_area('Enter your youtube video url here:', height=100)
 #st.button('Generate Thumbnail', on_click = generate_image(input))
 if st.button('Generate Thumbnail'):
     generate_image(input)
+    
     
 
 
